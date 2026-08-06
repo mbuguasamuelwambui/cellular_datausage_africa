@@ -1,0 +1,17 @@
+# Virtual Environment
+cellular_env/
+
+# Raw Telemetry Datasets
+rw-shared-2026/
+
+# PDFs
+*.pdf
+**/*.pdf
+
+# Python bytecode and caches
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+Thumbs.db

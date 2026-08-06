@@ -1,0 +1,526 @@
+================================================================================
+  AFRICA MOBILE NETWORK DATASET — ANALYSIS SUMMARY
+  Airtel Rwanda · February 2015 · ~200,000 subscribers
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PROJECT OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Paper:   "Cellular Data Usage in Africa: a Case Study from Rwanda" (IMC 2016)
+Authors: Sherif Akoush, Ahmed ElMezeini, Lucian Carata, Ripduman Sohan,
+         Andy Hopper — University of Cambridge Computer Laboratory
+Dataset: One week of anonymised traffic, Airtel Rwanda, February 2015,
+         ~200,000 unique mobile subscribers
+
+Two main directories:
+  imc16/    LaTeX paper source + generated figure PDFs
+  Africa/   Underlying measurement data (sheets/, raw .txt files, reference PDFs)
+
+Folder structure:
+  imc16/paper.tex                  Full conference paper (LaTeX source)
+  imc16/paper-short.tex            6-page workshop version (LaTeX source)
+  imc16/paper.pdf                  Compiled full paper (1.8 MB)
+  imc16/fig/                       223 figure PDFs (~62 cited in paper)
+  Africa/sheets/                   11 Excel workbooks (core data sources)
+  Africa/*.txt                     19 raw tabular data files (up to 182 MB each)
+  Africa/RTT_PDF/3G_in/            68 standalone hourly 3G RTT graphs (~1.4 MB total)
+  Africa/ (41 PDFs)                Reference papers and hardware specs
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. PAPER FIGURES — GRAPH PDFs TO DATA FILE MAPPING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+paper.tex     = full conference paper  (11 figures, ~62 graphics)
+paper-short.tex = 6-page workshop version (4 figures, 17 graphics)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: NETWORK ARCHITECTURE DIAGRAM
+  PDFs:    fig/gn.png
+  Caption: Cellular network architecture and tap point
+  In:      both papers
+  Source:  diagram — no data file
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: SUBMARINE CABLES MAP
+  PDFs:    fig/cables.jpg
+  Caption: Map of submarine cables in Africa
+  In:      paper.tex only
+  Source:  external image
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: BANDWIDTH (6 subfigures)
+  PDFs:    fig/bw_device_up.pdf, fig/bw_device_down.pdf
+           fig/bw_cont_all_up.pdf, fig/bw_cont_all_down.pdf
+           fig/bw_af_all_up.pdf, fig/bw_af_all_down.pdf
+  Caption: Bandwidth usage — avg per hour (Hour 0 = Friday 7pm Rwanda local time);
+           upstream/downstream by device type and continent
+  In:      both papers
+  Sources: Africa/sheets/tcp-udp-bw.xlsx
+             sheets: ip_flow_bwhist_g_u_agg (27,200 rows)
+                     ip_flow_maxbwhist_g_u_agg_conti (24,480 rows, by continent)
+           Africa/ip_flow_bwhist_g_u.txt (182 MB)
+           Africa/ip_flow_bwhist_g_u_agg.txt (745 KB)
+           Africa/ip_flow_maxbwhist_g_u.txt (26 MB)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: LATENCY / RTT CDFs (4 subfigures)
+  PDFs:    fig/rttin_device_0_1.pdf, fig/rttin_device_0_2.pdf
+           fig/rttin_device_0_4.pdf, fig/rttout_cont_0.pdf
+  Caption: Latency CDFs by device type
+  In:      paper.tex only
+  Sources: Africa/sheets/rtt.xlsx
+             sheets: lan (2,001 rows), lan_umts (2,001 rows), wan (2,001 rows)
+           Africa/sheets/tcp.xlsx
+             sheets: tcpflow_stats_rw/uk/us, tcprtt_[1,2,3,4,6,9]_syn
+           Africa/tcpflow_stats_noadavptive_rtthist.txt (12 MB)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: TIME-TO-FIRST-BYTE (45 subfigures)
+  PDFs:    fig/tfb_device_[1|2|][ZA|RW|KE|AF|EU][0|8|2].pdf
+           (3 time slots: midnight=0, 10am=8, 4am=2; 5 regions; 3 device tiers)
+  Caption: TFB by region × device × time of day
+  In:      paper.tex only
+  Sources: Africa/sheets/qos_g_u_device.xlsx
+             sheet: tcp_flow_qos_g_u_device (13,600 rows)
+             cols: time, device, direction (ug/dg), rat, seq,
+                   retransmission, dup_ack, out_of_order
+           Africa/tcp_flow_qos_g_u_device.txt (475 KB)
+           Africa/tcpflow_stats_syn.txt (131 KB)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: TOP CONTENT BY DEVICE TYPE (18 subfigures)
+  PDFs:    fig/content_[1,2,3,4,6,9]_topcontentvol.pdf   (6)
+           fig/content_[1,2,3,4,6,9]_topcontentcount.pdf (6)
+           fig/content_[1,2,3,4,6,9]_topcontenttime.pdf  (6)
+  Caption: Top content (x: downstream GB, y: upstream GB) per device type
+           and destination geographical location
+  In:      paper.tex (all 18); paper-short.tex (vol only, devices 1,2,3,6)
+  Sources: Africa/sheets/content.xlsx
+             sheets: up_notld (200 rows), down_notld (300 rows)
+             top downloader: googlevideo 20.5%, xvideos 4.5%, fbcdn 2.7%
+           Africa/sheets/dns.xlsx
+             sheets: dnsflowcontent_3dom (10,011 rows), phone/smart/usb/etc.
+           Africa/dnsflowcontent_3dom.txt (197 KB)
+           Africa/tcpflow_ip_topk.txt (47 KB)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: CONTENT BY USER LOCATION (18 subfigures)
+  PDFs:    fig/content_loc_[RW|KE|ZA|XX_AF|XX_EU|XX_NAC]_[1|9]_[vol|count|time].pdf
+  Caption: Top content per destination/source location
+  In:      paper.tex (all 18); paper-short.tex (vol only: RW/KE/NAC/EU)
+  Sources: Africa/sheets/dest_ip.xlsx
+             sheet: true (29,888 rows) — RTT-corrected IP geolocation
+           Africa/sheets/google_routers.xlsx
+             sheet: allip (1,478 rows) — Google PoP city/continent per IP
+           Africa/dest_ip_1m_2m.txt (46 MB)
+           Africa/dest_ip_2m_end.txt (15 MB)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: CONTENT SERVER PROXIMITY (2 subfigures)
+  PDFs:    fig/content_continent_up.pdf, fig/content_continent.pdf
+  Caption: Proximity of top content to Rwandan users —
+           normalised upstream/downstream volume by server location
+  In:      both papers
+  Sources: Africa/sheets/dest_ip.xlsx (true, out sheets)
+           Africa/sheets/content.xlsx (down_notld sheet)
+
+────────────────────────────────────────────────────────────────────────────────
+Figure: DEVICE DISTRIBUTION BY CONTINENT (1 figure)
+  PDFs:    fig/device_continent.pdf
+  Caption: Devices by continent of manufacture/origin
+  In:      paper.tex only
+  Sources: Africa/sheets/tac.xlsx
+             sheets: features (6,179 rows), toptypes (8 rows), topbrands (465 rows)
+           Africa/sheets/data.xlsx
+             sheets: types (8 rows), topbrands (465 rows)
+
+────────────────────────────────────────────────────────────────────────────────
+Standalone (not in either paper):
+  Africa/RTT_PDF/3G_in/3G_i_Hour[0-99].pdf   (68 files, 1 empty)
+  Source:  Africa/sheets/rtt.xlsx (lan_umts sheet)
+           Africa/tcpflow_stats_noadavptive_rtthist.txt
+           Raw PCAP files via tshark/gawk (see commands.txt)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. DATA FILES — Africa/sheets/ (11 Excel workbooks)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+────────────────────────────────────────────────────────────────────────────────
+data.xlsx
+  Key sheets: dns, topbrands, types, topphones
+  Content:
+    types      (8 rows)     Device census: 197,539 total devices
+                              phone  155,623  78.8%
+                              smart   30,793  15.6%
+                              usb      7,357   3.7%
+                              modem    1,260   0.6%
+                              router   1,002   0.5%
+                              tablet     919   0.5%
+                              set         96   0.0%
+    topbrands  (465 rows)   Brand rankings: TECNO 42.8%, ITEL 34.6%,
+                            Samsung 3.8%, ZTE 3.4%, Nokia 2.8%
+    topphones  (3,146 rows) Per-model: ITEL IT5130 23,736 devices,
+                            TECNO T340 23,490, TECNO T343 12,540
+    dns        (~42 rows)   Aggregate DNS stats per device type
+
+────────────────────────────────────────────────────────────────────────────────
+tac.xlsx
+  Key sheets: features, tac_top, topbrands, toptypes (15 sheets total)
+  Content:
+    features  (6,179 rows)  Full device table: brand, model, count, TAC,
+                            session count, type, OS, radio features
+                            (e.g. "2 SIM, GSM 1800, HSDPA, LTE...")
+    tac_top   (1,000 rows)  Top TAC codes with full band capability strings
+    brands    (9,805 rows)  Modem-type devices (ISP/vendor modems)
+  Note: Direct source for device_continent.pdf. Many devices 2G-only;
+        subset includes WCDMA/HSDPA (3G); smaller subset LTE.
+
+────────────────────────────────────────────────────────────────────────────────
+dns.xlsx
+  Key sheets: dnshist.txt, dnsflowcontent_3dom, dnsflowhist_resolver,
+              phone, smart, usb, tablet, modem, router, set (20 sheets total)
+  Content:
+    dnshist.txt        (201 rows)    RTT histogram: 152,275,043 total queries.
+                                     ~80% resolve <100ms; heavy long tail.
+    dnsflowhist_resolver (201×99)   RTT histograms for ~20 resolvers:
+                                     ISP (172.28.1.116) ~100M queries,
+                                     Google 8.8.8.8 ~10M, OpenDNS, Baidu
+    dnsflowcontent_3dom (10,011 rows) Per-domain per-device-type query counts
+    phone/smart/etc.                 Per-device-type top domain lists with RTT
+
+────────────────────────────────────────────────────────────────────────────────
+content.xlsx
+  Key sheets: up, down, up_notld, down_notld, porn, categories
+  Content:
+    down_notld (300 rows)   Top downloads by SLD (TLD stripped):
+                              googlevideo  20.5% (~2.66 TB)
+                              [unclassified] various
+                              gvt1          (Google Video Thumbnails)
+                              xvideos       4.5%
+                              youtube       2.9%
+                              fbcdn         2.7%
+                              instagram     2.1%
+                              whatsapp      2.1%
+                            Total download: ~12.97 TB
+    up_notld   (200 rows)   Top uploads by SLD:
+                              facebook      6.5%
+                              google        6.1%
+                              googleapis    6.1%
+                              dropbox       3.8%
+                            Total upload: ~1.26 TB (ratio ~1:10 vs download)
+    porn       (3 rows)     Upload ~0.15%, download ~710 GB (~5.5% of total)
+
+────────────────────────────────────────────────────────────────────────────────
+rtt.xlsx
+  Key sheets: lan, lan_umts, wan
+  Content (all 2,001 rows each, RTT bins at 0.05s steps, 0–100s):
+    lan       ~9.76M flows   Median RTT ~200ms
+    lan_umts  ~5.55M flows   3G-only; median RTT ~175ms (slightly better)
+    wan         ~427K flows  Sharp spike at exactly 200ms (49.8% of flows)
+                              → satellite backhaul signature
+
+────────────────────────────────────────────────────────────────────────────────
+qos_g_u_device.xlsx
+  Key sheets: tcp_flow_qos_g_u_device, len0, true, Sheet4
+  Content:
+    tcp_flow_qos_g_u_device (13,600 rows)
+      cols: time, device, direction (ug/dg), rat (0–4), seq,
+            retransmission, dup_ack, out_of_order
+      2G downlink stats: ~93% out-of-order (RLC retransmits appearing
+      as TCP reordering), ~4% TCP retransmissions
+    len0   (27,199 rows)  Zero-length / handshake-only flows (SYN/ACK/FIN)
+                           used for clean RTT estimation
+    true   (6,786 rows)   Validated TCP flows with full GTP TEID
+    Sheet4 (127 rows)     TCP flag code lookup table
+
+────────────────────────────────────────────────────────────────────────────────
+dest_ip.xlsx
+  Key sheets: true, akamai example, out
+  Content:
+    true  (29,888 rows × 25 cols)
+      cols: ip, RTT, maxmind continent, corrected continent, match flag,
+            count, nearest-neighbour IPs/RTTs, ISP
+      RTT-based geolocation overrides MaxMind where evidence contradicts
+      (several African-hosted IPs mis-classified as AS corrected to AF)
+    akamai example (60 rows)  Raw flow records for Akamai IP 172.224.37.171
+                               timestamps confirm Feb 2015
+    out (1,580 rows)  Known CDN/cloud prefix lookup: IP prefix → city, ISP,
+                       continent (Microsoft, Google Cloud, etc.)
+
+────────────────────────────────────────────────────────────────────────────────
+google_routers.xlsx
+  Key sheets: google_routers_2, allip
+  Content:
+    google_routers_2 (4,502 rows × 325 cols)
+      Traceroute-derived mapping: penultimate hop → Google router IP →
+      city code (mci/slc/dfw/ams etc.) → continent
+      African last-hop router: 209.85.247.69 in Kenya
+    allip (1,478 rows × 3,458 cols)
+      Per Google-server-IP traffic: up bytes, down bytes, last-hop city
+      e.g. 173.194.128.154 (AF): 105 MB up / 10.6 GB down
+
+────────────────────────────────────────────────────────────────────────────────
+tcp-udp-bw.xlsx
+  Key sheets: ip_flow_bwhist_g_u_agg, ip_flow_maxbwhist_g_u_agg_conti
+  Content:
+    ip_flow_bwhist_g_u_agg  (27,200 rows)
+      cols: time, device (0–5), code (ut/dt/um/dm), rat (0–4), val, len
+      RAT codes: 0=all, 1=GPRS/2G, 2=EDGE, 3=UMTS/3G, 4=HSPA
+    ip_flow_maxbwhist_g_u_agg_conti (24,480 rows)
+      Same broken out by continent (AF ~26–28% of ALL)
+    Sheet1 (11 × 811)  Raw TCP flow records with window-size histogram
+                        (Feb 2015 timestamps, TEID present)
+
+────────────────────────────────────────────────────────────────────────────────
+tcp.xlsx  [51 sheets — see Section 4 for full inventory]
+  Coverage:  136 hourly slots, Feb 6–12 2015 (time index 395345–395480)
+             Devices 0–9 (measurement probes), directions i/o
+  Key data:  RTT time series per device × direction × destination (RW/UK/US)
+             RTT histograms by RAT and 3G flag
+             Bandwidth at 1-second resolution with peak-IP identification
+             Top-K destination IPs and countries by traffic volume
+
+────────────────────────────────────────────────────────────────────────────────
+rw.gtpc.xlsx  [6 sheets — see Section 5 for detail]
+  Coverage:  20-minute GTP-C capture, Feb 6 2015 20:09–20:29 UTC
+             ~330K raw messages across 2 probes
+  Key data:  GTP-C session lifecycle (Create/Update/Delete PDP context)
+             166,538 requests / 164,498 responses (2,040 unmatched ~1.2%)
+             TEID pairing tables for correlating with TCP flow data
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. tcp.xlsx — FULL SHEET INVENTORY (51 sheets)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sheet name                          Rows     Cols  Description
+──────────────────────────────────────────────────────────────────────────────
+tcpflow_ip_topk                       49      180  Top-K dest IPs. Wide format: IP, port,
+                                                   rank, up bytes, down bytes, avg RTT,
+                                                   fraction. Per time-slot columns.
+tcpflow_country_topk                  50      179  Same aggregated by destination country.
+                                                   Top: Algeria, Philippines, Luxembourg,
+                                                   Norway, Czech Republic.
+tcpflow_stats_uk                   2,632        5  Per-device hourly RTT to UK.
+                                                   Cols: time, device, dir (i/o), avg, 97th pct
+tcpflow_stats_us                   2,728        5  Same for US destinations.
+tcpflow_stats_rw                   2,720        5  Same for Rwanda-local.
+                                                   Outbound avg ~6–15ms (vs ~225ms to US)
+tcpflow_stats_syn                  2,740        5  SYN-only RTT (all destinations).
+                                                   Cleaner estimate than all-flow.
+tcpflow_stats                      2,740        5  All-flow RTT (all destinations).
+tcpflow_stats_all_rtt              2,740        5  Including retransmit-inflated flows.
+                                                   97th pct reaches 486,942ms.
+tcprtt_1                             136       12  Device 1 RTT time series, i+o side-by-side.
+tcprtt_2                             136       12  Device 2. Feb 6–12 2015 hourly.
+tcprtt_3                             136       12  Device 3.
+tcprtt_4                             136       12  Device 4.
+tcprtt_6                             136       12  Device 6.
+tcprtt_9                             136       12  Device 9. Has datetime column (2015-02-06...).
+tcprtt_1_syn                         136       12  Device 1, SYN-only RTT.
+tcprtt_2_syn                         136       12  Device 2, SYN-only RTT.
+tcprtt_3_syn                         136       12  Device 3, SYN-only RTT.
+tcprtt_4_syn                         136       12  Device 4, SYN-only RTT.
+tcprtt_6_syn                         136       12  Device 6, SYN-only RTT.
+tcprtt_9_syn                         136       12  Device 9, SYN-only RTT + datetime.
+tcprtt_1_all                         136       12  Device 1, all-RTT incl. retransmits + datetime.
+tcprtt_2_all                         136       12  Device 2.
+tcprtt_3_all                         136       12  Device 3.
+tcprtt_6_all                         136       12  Device 6.
+tcprtt_9_all                         136       12  Device 9.
+tcprtt_9_uk                          109       12  Device 9, UK destinations only.
+tcprtt_9_us                          133       12  Device 9, US destinations only.
+tcprtt_9_rw                          130       12  Device 9, Rwanda-local only.
+in                                     0        0  Empty placeholder.
+in_syn                                 0        0  Empty placeholder.
+o                                      0        0  Empty placeholder.
+out_all_rtt                            0        0  Empty placeholder.
+in_all_rtt                             0        0  Empty placeholder.
+tcpflow_stats_bw                   2,448        5  Bandwidth per device/dir.
+                                                   Cols: time, device, dir, max, avg (bytes/s)
+tcpflow_stats_bw_down_side           136       40  Downlink BW pivoted per device + datetime.
+                                                   Starts 2015-02-06 19:00 (2h later than RTT).
+tcpflow_stats_bw_up_side             136       40  Uplink BW pivoted per device.
+tcpflow_all_bw_1s                    272        7  1-second BW with peak IP identified.
+                                                   Dev1 peak: 173.194.128.181 (Google)
+                                                   Dev2 peak: 197.243.125.26 (Airtel Rwanda)
+bw_1s_dev1                           136       11  Device 1 detailed 1s BW.
+bw_1s_dev2                           136       11  Device 2 detailed 1s BW.
+dest ip                               13        5  Lookup: 13 known dest IPs, avg RTT,
+                                                   country, city (US/NL hosts).
+tcpflow_stats_rtt_hist           493,200        5  Full RTT histogram (adaptive).
+                                                   Cols: time, device, dir, rtt bin, count
+                                                   Bins: 0.025s steps
+tcpflow_stats_noadavptive_rtthi  488,998        5  Same, no-adaptive condition.
+                                                   (no adaptive buffering/pacing)
+in_rtt_hist_395347                   200       20  Inbound RTT histogram, time slot 395347
+                                                   (2015-02-07 03:00), pivoted per device.
+in_rtt_hist_395370                   200       20  Same for time slot 395370.
+in_rtt_hist_395347_noadavptive       200       20  Time slot 395347, no-adaptive condition.
+in_rtt_hist_395370_noadaptive        200       20  Time slot 395370, no-adaptive condition.
+total rtt_all                      3,601       18  Aggregate RTT histogram across full capture.
+                                                   Includes count and cumulative distribution.
+tcpflow_rtthist_g                899,800        6  Largest sheet. RTT histogram by RAT.
+                                                   Cols: time, device, dir, rat (0–4), bin, count
+tcpflow_rtthist_g_u              850,600        6  RTT histogram with 3G binary flag.
+                                                   Cols: time, device, dir, 3g (0/1), bin, count
+395347_g                             199       46  RTT histogram for slot 395347, by RAT,
+                                                   pivoted across devices (inbound).
+395347_g_u                           199       14  Same with 3G flag.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. rw.gtpc.xlsx — GTP-C SIGNALLING DETAIL (6 sheets)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Capture window: Feb 6 2015, 20:09:22.999 – 20:29 UTC (20 minutes)
+Interface:      GGSN/SGSN Gn interface (GTP-C control plane)
+
+GTP-C message types present:
+  16  Create PDP Context Request   (SGSN → GGSN)
+  17  Create PDP Context Response  (GGSN → SGSN)
+  18  Update PDP Context Request   (SGSN ↔ GGSN)
+  19  Update PDP Context Response  (GGSN ↔ SGSN)
+  26  Delete PDP Context Request/Response (both directions)
+
+Sheet name      Rows     Cols  Description
+──────────────────────────────────────────────────────────────────────────────
+rw1.gtpc        75,420     15  Probe 1 (SGSN-side, UMTS type 1).
+                               First msg: 20:09:23.047 GMT, type 18 (Update).
+                               teid_cp is NaN — only data TEID on this side.
+rw2.gtpc       255,855     15  Probe 2 (GGSN-side, UMTS type 2).
+                               First msg: 20:09:22.999 GMT, type 16 (Create).
+                               Both teid_data and teid_cp populated.
+request        166,538     22  All requests (types 16+18), both probes.
+                               Extra cols: matched response TEID.
+response       164,498     16  All responses (types 17+19).
+                               charging_id only populated here.
+                               2,040 unmatched requests (~1.2%).
+filter         166,538      3  Compact TEID pairing: umts, request TEID,
+                               response TEID.
+filter_umts    152,482      3  UMTS type-1 only (14,056 fewer = type-2 excluded).
+
+Key fields:
+  teid data    — Data-plane GTP tunnel identifier (32-bit int)
+  teid cp      — Control-plane GTP tunnel identifier
+  seq          — GTP sequence number (for request/response matching)
+  charging id  — Billing record ID (response messages only)
+  umts         — Version indicator: 1=SGSN-side, 2=GGSN-side
+  frame number — Wireshark/pcap frame index
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. RAW TEXT DATA FILES — Africa/
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Filename                                Size    Format   Description
+──────────────────────────────────────────────────────────────────────────────
+ip_flow_bwhist_g_u.txt                182 MB  CSV+tabs  IP flow BW histograms.
+                                                         Cols: FlowID, DeviceID,
+                                                         type (ut/dt/um/dm/ub/db),
+                                                         bin index, throughput, count
+ip_flow_bwhist_g_u_agg.txt           745 KB  CSV+tabs  Same schema, pre-aggregated.
+ip_flow_maxbwhist_g_u.txt             26 MB  CSV+tabs  Peak BW histogram, same schema.
+tcpflow_stats_noadavptive_rtthist.txt 12 MB  CSV+tabs  RTT histogram, non-adaptive TCP.
+                                                         Cols: FlowID, DeviceID, dir (o),
+                                                         bin threshold (ms), count
+tcp_flow_qos_g_u_device.txt          475 KB  CSV+tabs  TCP QoS per device/RAT.
+                                                         Cols: FlowID, DeviceID,
+                                                         dir (ug/dg), bin, 4 QoS values
+tcpflow_stats_syn.txt                131 KB  CSV+tabs  SYN packet stats.
+                                                         Cols: FlowID, DeviceID,
+                                                         dir (o/i), probability, count
+tcpflow_stats_rw.txt                 132 KB  CSV+tabs  TCP retransmit/reorder stats.
+tcpflow_stats_bw.txt                 119 KB  CSV+tabs  Per-flow BW: up/down throughput.
+tcpflow_ip_topk.txt                   47 KB  TSV       Top-K dest IP:port pairs.
+                                                         Cols: IP, port, DeviceID,
+                                                         dir, uplink bytes, downlink bytes
+dnsflowcontent_3dom.txt              197 KB  TSV       DNS query analysis.
+                                                         Cols: domain (3-component),
+                                                         query count, classification code
+                                                         (first 3 lines: Hadoop warnings)
+dnsflowhist_2_4.txt                   19 KB  TSV       DNS histogram, slots 2–4.
+                                                         Hadoop output with domain metrics.
+dnsflowhist_opendns.txt               22 KB  TSV       OpenDNS-classified domains + RTT.
+dest_ip_1m_2m.txt                     46 MB  TSV       Dest IPs in 1M–2M byte range.
+                                                         Cols: IP, fraction, region1,
+                                                         region2, flag, count
+dest_ip_2m_end.txt                    15 MB  TSV       Dest IPs >2M bytes. Same schema.
+commands.txt                         1.6 KB  Text      tshark + gawk commands for
+                                                         extracting RTT/GTP/DNS from PCAP.
+                                                         Includes TEID investigation notes
+                                                         and NFS mount for Rwanda dataset.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. KEY FINDINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Device landscape
+  197,539 unique devices. 78% basic phones (voice/SMS-oriented), 15.6%
+  smartphones (Android). Top brands: TECNO 42.8%, ITEL 34.6%, Samsung 3.8%.
+  Both TECNO and ITEL are African-market feature phone specialists.
+  Top models: ITEL IT5130 (23,736), TECNO T340 (23,490), TECNO T343 (12,540).
+  Many devices 2G-only; subset with WCDMA/HSDPA (3G); smaller subset LTE.
+
+Network quality
+  LAN-side TCP RTT median ~200ms (high by global standards).
+  WAN segment: sharp spike at exactly 200ms (49.8% of flows) — satellite
+  backhaul signature. TCP out-of-order rate ~93% on 2G downlink (RLC-layer
+  retransmissions appearing as TCP reordering). TCP retransmission rate ~4%.
+  Outbound RTT: Rwanda-local ~6–15ms, UK ~165ms, US ~225ms.
+
+Traffic composition
+  Total: ~12.97 TB download, ~1.26 TB upload over one week. Ratio ~1:10.
+  Google Video/YouTube: 20.5% of all download bytes (~2.66 TB).
+  Facebook + WhatsApp combined: ~10% of both upload and download.
+  xvideos: 4.5% of download bytes (4th by domain stem).
+  Upload: facebook 6.5%, google 6.1%, googleapis 6.1%, dropbox 3.8%.
+
+DNS behaviour
+  152 million total DNS queries.
+  ISP resolver (172.28.1.116): ~100M queries (dominant).
+  Google 8.8.8.8: ~10M queries.
+  ~80% of queries resolve in <100ms; heavy long tail.
+  Chinese resolvers (Baidu) visible — Chinese-manufactured devices
+  querying Chinese DNS by default.
+  Smartphones generate far more DNS traffic than basic phones.
+
+Content server geography
+  29,888 destination IPs analysed with RTT-based geolocation.
+  MaxMind GeoIP corrected where RTT evidence contradicts classification
+  (several African-hosted IPs mis-classified as AS, corrected to AF).
+  Google last-hop router: 209.85.247.69 in Kenya.
+  EU PoPs (Amsterdam) also contribute significantly.
+  CDN infrastructure sparse in-region; most content on long-haul links.
+
+GTP-C session dynamics
+  ~330K signalling messages in 20 minutes across 2 probes.
+  High session churn consistent with a busy national gateway node.
+  Probe 1 (SGSN-side, UMTS type 1): 75,420 messages, Update-heavy.
+  Probe 2 (GGSN-side, UMTS type 2): 255,855 messages, Create-heavy.
+  2,040 unmatched requests (~1.2%): sessions mid-flight at capture start.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. FILE PROVENANCE NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Africa/RTT_PDF/3G_in/3G_i_Hour64.pdf is empty (0 bytes) — one missing
+  hourly RTT graph in the standalone series.
+
+- imc16/fig/ contains 223 PDFs; only ~62 are cited in paper.tex. The
+  remaining ~161 are exploratory/variant plots from the analysis phase.
+
+- Dataset epoch (Feb 6–12, 2015) confirmed consistently across:
+    tcp.xlsx datetime columns (2015-02-06 17:00:00 onward)
+    rw.gtpc.xlsx timestamps (Feb 6, 2015 20:09:22.999 GMT)
+    dest_ip.xlsx Akamai example sheet (Unix epoch ~1,423,516,xxx)
+
+================================================================================
+  End of report
+================================================================================
