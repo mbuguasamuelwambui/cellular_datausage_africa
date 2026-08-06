@@ -990,14 +990,14 @@ def plot_overall_throughput_time_series():
 def plot_stacked_traffic_by_continent():
     """Generates stacked traffic charts by destination continent."""
     print("Loading continent bandwidth stats...")
-    df = access.load_continent_rtt_distribution()
+    df = access.load_continent_bandwidth_stats()
     
     continent_map = {'AF': 'Africa', 'EU': 'Europe', 'NA': 'North America', 'AS': 'Asia'}
     times = sorted(df['time_idx'].unique())
     x_indices = range(len(times))
     
     for direction, code in [('Downlink', 'dtcont'), ('Uplink', 'utcont')]:
-        df_dir = df[df['flag'] == (1 if direction == 'Downlink' else 0)].copy() # simple flag distinction
+        df_dir = df[df['direction'] == code].copy()
         
         # Group by time and continent
         grouped = df_dir.groupby(['time_idx', 'continent'])['flow_count'].sum().unstack(fill_value=0)
@@ -1052,7 +1052,8 @@ def plot_stacked_traffic_by_country():
         percentages = percentages.reindex(times, fill_value=0)
         
         fig, ax = plt.subplots(figsize=(7, 4.5))
-        ax.stackplot(x_indices, [percentages[c] for c in plot_cols], labels=plot_cols)
+        country_colors = ['#2980b9', '#27ae60', '#d35400', '#8e44ad', '#7f8c8d']
+        ax.stackplot(x_indices, [percentages[c] for c in plot_cols], labels=plot_cols, colors=country_colors)
         
         ax.set_title(f"{direction.capitalize()} Traffic Country Classification", pad=12, fontweight='bold')
         ax.set_xlabel("Hour")

@@ -50,6 +50,21 @@ We model the core Gateway GPRS Support Node (GGSN) signaling queue as a finite-c
 $$\mathbb{E}[\Delta_{\text{peak}}] = \mathbb{E}[T] + \frac{1}{\lambda_{\text{sig}}(1 - P_{\text{drop}})}$$
 This prevents signaling saturation from cheap, low-payload "chatty" mobile devices.
 
+### Section 8: Zipf-Mandelbrot Content Entropy \& Caching Limits
+Fits the Zipf-Mandelbrot distribution $P(r) = \frac{C}{(r + q)^\alpha}$ to domain query frequencies to compute Content Request Entropy $H(\text{Content})$ and define cache hit rate capacity limits $\eta(K)$.
+
+### Section 9: Effective Capacity under Delay Constraints
+Computes the Effective Capacity $E_c(\theta) = - \frac{1}{\theta} \lim_{t \to \infty} \frac{1}{t} \ln \mathbb{E}[e^{-\theta S(t)}]$ to define maximum throughput under statistical delay budgets $\theta$.
+
+### Section 10: Directed Information (Transfer Entropy) DNS to GTP-C
+Computes Transfer Entropy $T_{X \to Y}$ from DNS query rate series $X_t$ to core signaling request series $Y_t$ to confirm directed causality from edge DNS queries to core PDP context storms.
+
+### Section 11: TCP window BDP Starvation KL Divergence
+Meures the relative entropy $D_{\text{KL}}(P_{\text{win}} \parallel P_{\text{BDP}})$ between empirical window size distribution $P_{\text{win}}$ and optimal BDP target distribution $P_{\text{BDP}}$ to isolate window compression constraints.
+
+### Section 12: Hardware-Conditional Entropy of Signaling Overhead
+Evaluates conditional entropy $H(S \mid D) = \sum P(D=d) H(S \mid D=d)$ to analyze protocol signaling overhead $S$ conditional on phone vs. smartphone hardware classes $D$.
+
 ---
 
 ## 4. Repository Structure
@@ -69,7 +84,12 @@ dsail/research/cellular/rwanda/
 ├── output_plots/                 # Directory containing generated high-res plots (300 dpi)
 │   ├── fig1_error_exponent_markov.png   # Exponent comparison vs. transmission rate
 │   ├── fig2_fbl_satellite_tandem.png     # Achievable FBL rate vs. blocklength
-│   └── fig3_aoi_signaling_saturation.png # Peak AoI vs. core signaling load
+│   ├── fig3_aoi_signaling_saturation.png # Peak AoI vs. core signaling load
+│   ├── fig4_zipf_caching.png             # Edge caching hit rate vs. cache size
+│   ├── fig5_effective_capacity.png       # Effective capacity vs. delay exponent
+│   ├── fig6_transfer_entropy.png         # Directed DNS to GTP-C causality correlation
+│   ├── fig7_tcp_starvation.png           # Congestion window BDP starvation KL
+│   └── fig8_hardware_conditional_entropy.png # Signaling overhead by device class
 ├── main.py                       # Master execution script (Phase 3 Synthesis)
 ├── main.tex                      # IEEE Transactions double-column LaTeX manuscript
 ├── requirements.txt              # Clean python dependency requirements

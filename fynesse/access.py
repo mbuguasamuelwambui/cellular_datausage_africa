@@ -254,6 +254,13 @@ def load_resolver_rtt_histograms(folder=DEFAULT_FOLDER) -> pd.DataFrame:
     df = _read_excel_cached(path, sheet_name="dnsflowhist_resolver")
     return df
 
+def load_continent_bandwidth_stats() -> pd.DataFrame:
+    """Loads continent bandwidth stats from ip_flow_maxbwhist_g_u_agg_continent.txt."""
+    path = os.path.join(TXT_FOLDER, "ip_flow_maxbwhist_g_u_agg_continent.txt")
+    df = pd.read_csv(path, sep=r'[,\t]', engine='python', header=None)
+    df.columns = ['time_idx', 'device_code', 'direction', 'flag', 'bytes', 'flow_count', 'continent']
+    return df
+
 def load_continent_rtt_distribution(folder=DEFAULT_FOLDER) -> pd.DataFrame:
     """Loads SYN out RTT histogram by continent from tcpflow_rtthist_g_u_syn_out_continent.txt."""
     path = os.path.join(TXT_FOLDER, "tcpflow_rtthist_g_u_syn_out_continent.txt")

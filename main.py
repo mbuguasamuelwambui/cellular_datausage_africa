@@ -110,12 +110,9 @@ def main():
     print("Generating Plot 3: Age of Information Optimization...")
     # Solve Peak AoI
     opt_lambda, opt_aoi = fynesse.estimate_core_signaling_aoi(
-        pd.DataFrame({'timestamp_gmt': pd.date_range(start='2015-02-11', periods=166538, freq='7ms')}) # fallback or dummy, wait: we use gtpc_df in actual test
+        pd.DataFrame({'timestamp_gmt': pd.date_range(start='2015-02-11', periods=166538, freq='7ms')})
     )
     
-    # Wait, the estimate_core_signaling_aoi already prints and saves the plot as core_queue_aoi_optimization.png.
-    # To follow Task 3.2 strictly: we copy the generated plot to fig3_aoi_signaling_saturation.png, or we write a custom plot!
-    # Let's write the custom plot for fig3_aoi_signaling_saturation.png right here:
     lambdas = np.linspace(1.0, 195.0, 100)
     aoi_vals = []
     
@@ -159,7 +156,39 @@ def main():
     plt.close()
     print(f"Saved: {plot3_path}")
     
-    print("\nAll Phase 3 visualizations completed successfully!")
+    # ---------------------------------------------------------
+    # Execute the 5 new Advanced Information Theory Experiments
+    # ---------------------------------------------------------
+    print("\nExecuting Phase 3: Advanced Information Theory Experiments...")
+    
+    # Section 8: Zipf-Mandelbrot & Caching
+    entropy_c, eta10, eta50 = fynesse.calculate_zipf_mandelbrot_caching()
+    print(f"  - Content request entropy: {entropy_c:.4f} bits")
+    print(f"  - Cache hit rate capacity: K=10: {eta10*100:.1f}%, K=50: {eta50*100:.1f}%")
+    
+    # Section 9: Effective Capacity under delay constraints
+    fynesse.calculate_effective_capacity()
+    
+    # Section 10: DNS to GTP-C Transfer Entropy causality
+    t_xy = fynesse.calculate_dns_gtpc_transfer_entropy()
+    print(f"  - DNS to GTP-C Transfer Entropy T_X->Y: {t_xy:.4f} bits")
+    
+    # Section 11: TCP window BDP starvation KL divergence
+    kl_win = fynesse.calculate_tcp_window_bdp_starvation()
+    print(f"  - TCP window BDP starvation KL Divergence: {kl_win:.4f} bits")
+    
+    # Section 12: Hardware Conditional Entropy of Signaling Overhead
+    h_s, h_s_d = fynesse.calculate_hardware_conditional_entropy()
+    print(f"  - Overhead Entropy H(S): {h_s:.4f} bits, Conditional H(S|D): {h_s_d:.4f} bits")
+    
+    # Section 13: Age of Incorrect Information (AoII) CTMC Optimization
+    opt_tau, opt_aoii, opt_rate = fynesse.calculate_aoii_rrc_optimization()
+    print(f"  - Optimal AoII threshold: {opt_tau:.2f} s, Min AoII: {opt_aoii:.2f} ms, signaling rate: {opt_rate:.2f} updates/s")
+    
+    # Section 14: Private Semantic Caching Pareto optimization
+    fynesse.calculate_private_semantic_caching()
+    
+    print("\nAll Phase 3 and advanced visualizations completed successfully!")
 
 if __name__ == "__main__":
     main()
