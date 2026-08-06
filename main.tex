@@ -1,4 +1,4 @@
-\documentclass[journal,compsoc]{IEEEtran}
+\documentclass[journal]{IEEEtran}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -15,7 +15,8 @@
 
 \title{An End-to-End Information-Theoretic Framework for Resource-Constrained Cellular Infrastructure: Feedback Error Exponents, Finite-Blocklength Tandem Bounds, and Control-Plane Age of Information}
 
-\author{Data Science \& Artificial Intelligence Lab (DSAIL), Nairobi, Kenya}
+\author{Data Science \& Artificial Intelligence Lab (DSAIL), Nairobi, Kenya
+\thanks{This research utilizes the 2015 Airtel Rwanda national-scale cellular trace dataset originally curated by Cambridge University.}}
 
 \maketitle
 
@@ -41,8 +42,20 @@ Rather than analyzing these symptoms in isolation, we model the cellular path as
 
 By positioning our three core mathematical pillars against state-of-the-art research published between 2023 and 2026 across *IEEE Transactions on Information Theory*, *IEEE Transactions on Communications*, *IEEE/ACM Transactions on Networking*, and *IEEE Journal on Selected Areas in Communications*, we bridge the gap between forensic network measurement and mathematical information theory.
 
+\section{System Model and Concatenated Information Pipeline}
+We define the end-to-end communication system as a three-stage concatenated channel linking the user equipment (UE) at the wireless edge to the GGSN core gateway via fading radio paths and satellite transit backhauls. 
+
+\subsection{Radio Access Network DMC Edge}
+The UE transmits symbols $x \in \mathcal{X}$ over the RAN edge governed by a transition matrix $W_1(y|x)$ representing physical-layer fading and additive noise. The feedback channel is asymmetric, carrying back output symbols $y$ to the UE with a time-varying delay $d(S_t)$. The RRC state $S_t$ tracks discrete resource assignments, modeling transitions between high-power dedicated links, shared low-power states, and power-saving idle states.
+
+\subsection{Tandem Satellite WAN Concatenation}
+The transport link concatenates the RAN edge with a Wide Area Network (WAN) routing path featuring a geostationary (GEO) satellite link $W_2(z|y)$ with deterministic latency $D_{\text{sat}} \approx 200$~ms. For short control messages (such as DNS lookups and GTP-C handshakes), asymptotic capacity fails to capture block error rate margins. We model this via finite-blocklength coding bounds where the code length $n$ is restricted.
+
+\subsection{Core Gateway Signaling Processor}
+Updates processed over the tandem link arrive at the GGSN core gateway. We model the gateway processor as an $M/GI/1/K$ finite-buffer queue. Control-plane signaling messages (such as session creation, update, and termination requests) arrive according to a Poisson process with rate $\lambda_{\text{sig}}$, and service times follow a general distribution $G(s)$ representing CPU cycles needed to manage session state contexts.
+
 \section{Pillar I: Feedback Exponents over Asymmetric Links with Markovian-Delayed Feedback}
-Let the forward edge channel be a Discrete Memoryless Channel (DMC) defined by the stochastic matrix $W_1(y|x)$, where $x \in \mathcal{X}$ and $y \in \mathcal{Y}$. The feedback link carries the channel outputs $y_t$ back to the transmitter. However, this feedback is delayed by a random variable $d(S_t)$ controlled by the cellular Radio Resource Control (RRC) state $S_t$. We model $S_t$ as a finite-state, continuous-time Markov chain taking values in:
+Let the forward edge channel be a DMC defined by the stochastic matrix $W_1(y|x)$, where $x \in \mathcal{X}$ and $y \in \mathcal{Y}$. The feedback link carries the channel outputs $y_t$ back to the transmitter. However, this feedback is delayed by a random variable $d(S_t)$ controlled by the cellular Radio Resource Control (RRC) state $S_t$. We model $S_t$ as a finite-state, continuous-time Markov chain taking values in:
 \begin{equation}
 \mathcal{S} = \{\text{Dedicated (D)}, \text{Shared (S)}, \text{Idle (I)}\}
 \end{equation}
@@ -110,7 +123,7 @@ While AoI measures update freshness, it is state-agnostic. We adopt the Age of I
 \begin{equation}
 A(t) = (t - t_0) \cdot \mathbb{I}(S(t) \neq \hat{S}(t))
 \end{equation}
-We define a threshold-based updating policy where the device transmits updates when mismatch duration reaches $\tau$. The average AoII is minimized subject to update signaling rate limits:
+We define a threshold-based updating policy where the UE transmits updates when mismatch duration reaches $\tau$. The average AoII is minimized subject to update signaling rate limits:
 \begin{equation}
 \min_{\tau > 0} \mathbb{E}[A(\tau)] \quad \text{s.t.} \quad \lambda_{\text{update}}(\tau) \leq \Lambda_{\text{max}}
 \end{equation}
@@ -142,10 +155,10 @@ We compute Transfer Entropy $T_{X \to Y}$ from DNS query rates $X_t$ to core GTP
 \begin{equation}
 T_{X \to Y} = \sum_{t=1}^{N} H(Y_t \mid Y_1^{t-1}) - H(Y_t \mid Y_1^{t-1}, X_1^{t-1})
 \end{equation}
-A statistically significant $T_{X \to Y} > 0$ proves that background DNS query chatter causally excites core signaling session storms.
+A statistically significant $T_{X \to Y} > 0$ proves that background DNS query chatter causally excites core signaling sessions.
 
 \subsection{TCP Congestion Window BDP Starvation}
-Let $P_{\text{win}}(w)$ be the empirical TCP receiver window size distribution, and let $P_{\text{BDP}}(w)$ be the ideal window distribution centered around optimal BDP $= C \times RTT_{\text{min}}$. We compute:
+Let $P_{\text{win}}(w)$ be the empirical TCP receiver window size distribution, and let $P_{\text{BDP}}(w)$ be the ideal window distribution centered around optimal BDP $= C \times RTT_{\text{min}}$. We compute the relative entropy:
 \begin{equation}
 D_{\text{KL}}(P_{\text{win}} \parallel P_{\text{BDP}}) = \sum_{w} P_{\text{win}}(w) \log_2 \left( \frac{P_{\text{win}}(w)}{P_{\text{BDP}}(w)} \right)
 \end{equation}
@@ -174,30 +187,89 @@ $\alpha, q, H(\text{Content})$ & Zipf Caching Parameters & \texttt{dnsflowconten
 $\theta, E_c(\theta)$ & Effective Capacity QoS & \texttt{rtt.xlsx} (lan\_umts) \\
 $T_{X \to Y}$ & DNS to GTP-C Transfer Entropy & \texttt{dnshist.txt}, \texttt{rw.gtpc.xlsx} \\
 $D_{\text{KL}}$ & TCP BDP Starvation & \texttt{tcp-udp-bw.xlsx} \\
-$H(S \mid D)$ & Hardware Conditional Entropy & \texttt{data.xlsx}, \texttt{tac.xlsx} \\
+$H(S \mid D)$ & Hardware Conditional Entropy & \texttt{data.xlsx}, \texttt{types}, \texttt{tac.xlsx} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Numerical validations are generated by running the pipeline script, which exports:
-\begin{itemize}
-    \item \textbf{Fig 1:} \texttt{fig1\_error\_exponent\_markov.png} (Error Exponents vs. Rate)
-    \item \textbf{Fig 2:} \texttt{fig2\_fbl\_satellite\_tandem.png} (FBL Achievable Rate vs. Blocklength)
-    \item \textbf{Fig 3:} \texttt{fig3\_aoi\_signaling\_saturation.png} (Peak AoI vs. Signaling Load)
-    \item \textbf{Fig 4:} \texttt{fig4\_zipf\_caching.png} (Edge Caching Limit vs. Cache Size)
-    \item \textbf{Fig 5:} \texttt{fig5\_effective\_capacity.png} (Effective Capacity vs. Delay Bound)
-    \item \textbf{Fig 6:} \texttt{fig6\_transfer\_entropy.png} (Directed Time-Lag Correlation)
-    \item \textbf{Fig 7:} \texttt{fig7\_tcp\_starvation.png} (Empirical vs. Optimal Window)
-    \item \textbf{Fig 8:} \texttt{fig8\_hardware\_conditional\_entropy.png} (Overhead by Device Class)
-    \item \textbf{Fig 9:} \texttt{fig9\_aoii\_optimization.png} (AoII Threshold Optimization)
-    \item \textbf{Fig 10:} \texttt{fig10\_semantic\_private\_caching.png} (Pareto Caching Utility vs. Leakage)
-\end{itemize}
+\subsection{Visual Analysis of Results}
+Numerical validations and parameter bounds are plotted in Figs.~\ref{fig:fig1_exponents}--\ref{fig:fig10_semantic_private}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig1_error_exponent_markov.png}
+\caption{Sphere-Packing Exponent bounds $E(R)$ comparing delayed Markovian feedback trajectories ($\mathbf{P}_S$) to open-loop exponents.}
+\label{fig:fig1_exponents}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig2_fbl_satellite_tandem.png}
+\caption{Achievable transmission rates $R^*(n, \epsilon)$ in the FBL regime over fading-satellite tandem channels ($D_{\text{sat}} = 200$~ms).}
+\label{fig:fig2_tandem}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig3_aoi_signaling_saturation.png}
+\caption{Average Peak Age of Information (AoI) as a function of gateway update arrival rate $\lambda_{\text{sig}}$ over $M/GI/1/K$ queues.}
+\label{fig:fig3_aoi}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig4_zipf_caching.png}
+\caption{Theoretical cache hit capacity $\eta(K)$ as a function of cache size $K$ under fitted Zipf-Mandelbrot popularity parameters.}
+\label{fig:fig4_zipf}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig5_effective_capacity.png}
+\caption{Effective Capacity $E_c(\theta)$ limits for 2G and 3G channels across variations of the QoS delay exponent $\theta$.}
+\label{fig:fig5_effective}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig6_transfer_entropy.png}
+\caption{Directed Information/Transfer Entropy $T_{X \to Y}$ showing causal signaling load feedback driven by DNS chatter.}
+\label{fig:fig6_transfer}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig7_tcp_starvation.png}
+\caption{Empirical TCP window distribution $P(w)$ compared against optimal BDP target limits, demonstrating window starvation.}
+\label{fig:fig7_starvation}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig8_hardware_conditional_entropy.png}
+\caption{Hardware-conditional entropy of signaling overhead $H(S \mid D)$ split by device archetypes (Phone vs. Smartphone).}
+\label{fig:fig8_hardware}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig9_aoii_optimization.png}
+\caption{Age of Incorrect Information (AoII) threshold optimization curve seeking the optimal update interval $\tau^*$.}
+\label{fig:fig9_aoii}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{output_plots/fig10_semantic_private_caching.png}
+\caption{Task-completion semantic caching utility Pareto frontier under mutual information privacy leakage constraints $\epsilon$.}
+\label{fig:fig10_semantic_private}
+\end{figure}
 
 \section{Literature Review \& SOTA Alignment (2023--2026)}
 The proposed framework aligns directly with state-of-the-art literature across six tracks:
 
 \subsection{Finite-Blocklength Coding \& Satellite/Non-Terrestrial Networks (NTN)}
-Recent Non-Terrestrial Network (NTN) and LEO satellite papers explore short-packet rate-splitting multiple access (RSMA) and Polyanskiy-Poor-Verdú (PPV) dispersion. Xu et al.~\cite{xu_satellite} investigate rate-splitting under strict blocklength and QoS constraints in multilayer satellite communications. In terrestrial-satellite concatenations, the normal approximation for blocklength $n$ and error probability $\epsilon$ must account for composite dispersion. While Yang et al.~\cite{yang_fbl} show how fading coherence time degrades blocklength efficiency on the wireless edge, our tandem model characterizes the covariance penalty when fading links concatenate with deterministic 200~ms satellite walls. Proactive optimization of pilot grant-free access in satellite IoT, as analyzed by Jiao et al.~\cite{jiao_satellite}, aligns with our signaling minimization over satellite links.
+Recent Non-Terrestrial Network (NTN) and LEO satellite papers explore short-packet rate-splitting multiple access (RSMA) and Polyanskiy-Poor-Verdú (PPV) dispersion. Xu et al.~\cite{xu_satellite} investigate rate-splitting under strict blocklength and QoS constraints in multilayer satellite communications. In terrestrial-satellite concatenations, the normal approximation for blocklength $n$ and error probability $\epsilon$ must account for composite dispersion. While Yang et al.~\cite{yang_fbl} show how fading coherence time degrades blocklength efficiency on the wireless edge, our tandem model characterises the covariance penalty when fading links concatenate with deterministic 200~ms satellite walls. Proactive optimization of pilot grant-free access in satellite IoT, as analyzed by Jiao et al.~\cite{jiao_satellite}, aligns with our signaling minimization over satellite links.
 
 \subsection{Age of Information (AoI), Age of Incorrect Information (AoII) \& Semantic Communications}
 Semantic communications and status update timeliness have evolved rapidly from standard Age of Information (AoI) surveys~\cite{yates_aoi} to Age of Incorrect Information (AoII). Bountrogiannis et al.~\cite{bountrogiannis_aoii} establish AoII-optimal transmission policies for Markov sources using hybrid ARQ under resource constraints. Similarly, Cosandal et al.~\cite{cosandal_aoii} adopt dual-regime absorbing Markov chains (DR-AMC) to minimize AoII functions in push-based status updating. We extend these models to $M/GI/1/K$ control-plane queues to prevent signaling-plane collapse. Goal-oriented communication bounds where data fidelity is subordinated to task effectiveness, as formulated in~\cite{goal_oriented}, provide the foundation for our private semantic caching Pareto optimization.
