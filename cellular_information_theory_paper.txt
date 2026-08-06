@@ -276,8 +276,8 @@ A statistically significant T_{X -> Y} > 0 proves that background DNS keep-alive
 ================================================================================
 SECTION IX: TCP CONGESTION WINDOW ENTROPY & BDP STARVATION
 ================================================================================
-Wireless retransmission delays and out-of-order packet illusions mislead TCP congestion engines. Let P_win(w) be the empirical probability distribution of TCP receiver window sizes, and let P_BDP(w) be the ideal window distribution centered around optimal BDP = C * RTT_min. We compute the relative entropy:
-  D_KL(P_win || P_BDP) = sum_w P_win(w) * log_2( P_win(w) / P_BDP(w) )
+Wireless retransmission delays and out-of-order packet illusions mislead TCP congestion engines. Let P_win(w) be the empirical probability distribution of TCP receiver window sizes, and let P_BDP(w) be the ideal window distribution centered around optimal BDP = C \times RTT_min. We compute the relative entropy:
+  D_KL(P_win || P_BDP) = \sum_{w} P_win(w) \log_2 \left( \frac{P_win(w)}{P_BDP(w)} \right)
 High relative entropy mathematically proves persistent congestion window starvation caused by wireless RLC reordering loops.
 
 ================================================================================
